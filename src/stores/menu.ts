@@ -1,10 +1,10 @@
-import { reactive, onBeforeUnmount, onMounted } from 'vue';
+import { reactive, onBeforeUnmount, onMounted, watch } from 'vue';
 
 import { defineStore, storeToRefs } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 
-import { menuItems } from '@/core/data/menu';
+import { getMenuForPath, isCompanyView, menuItems } from '@/core/data/menu';
 import type { Menu, MenuState } from '@/types/menu';
 
 import { useLayout } from './layout';
@@ -26,26 +26,54 @@ export const useMenu = defineStore('menu', () => {
   let scrollTimeoutId: ReturnType<typeof setTimeout> | null = null;
   let scrollId: ReturnType<typeof setTimeout> | null = null;
 
+  function switchMenu(pathname: string) {
+    const newMenu = getMenuForPath(pathname);
+    if (state.menuItem !== newMenu) {
+      state.menuItem = newMenu;
+      state.pinedItem = [];
+      // Restore pinned items for the new menu
+      const saved = localStorage.getItem('pinedItems');
+      if (saved) {
+        const ids = JSON.parse(saved) as string[];
+        restorePinnedItems(state.menuItem, ids);
+      }
+    }
+  }
+
+  function restorePinnedItems(items: Menu[], ids: string[]) {
+    items.forEach(item => {
+      if (item.id && ids.includes(item.id)) {
+        item.pined = true;
+        if (!state.pinedItem.includes(item)) {
+          state.pinedItem.push(item);
+        }
+      }
+      if (item.children) restorePinnedItems(item.children, ids);
+    });
+  }
+
+  function showingCompanyView(): boolean {
+    return isCompanyView(route.path);
+  }
+
   onMounted(() => {
+    // Set initial menu based on current route
+    switchMenu(route.path);
+
     const saved = localStorage.getItem('pinedItems');
     if (saved) {
       const ids = JSON.parse(saved) as string[];
-
-      const restorePinned = (items: Menu[]) => {
-        items.forEach(item => {
-          if (item.id && ids.includes(item.id)) {
-            item.pined = true;
-            if (!state.pinedItem.includes(item)) {
-              state.pinedItem.push(item);
-            }
-          }
-          if (item.children) restorePinned(item.children);
-        });
-      };
-
-      restorePinned(state.menuItem);
+      restorePinnedItems(state.menuItem, ids);
     }
   });
+
+  // Watch route changes to switch sidebar menu
+  watch(
+    () => route.path,
+    (newPath) => {
+      switchMenu(newPath);
+    },
+  );
 
   function sidebarClose() {
     layoutState.value.closeSidebar = true;
@@ -195,5 +223,6 @@ export const useMenu = defineStore('menu', () => {
     pined,
     setNavActive,
     searchMenu,
+    showingCompanyView,
   };
 });

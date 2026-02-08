@@ -5,7 +5,6 @@
       <LogoWrapper :icon="'align-center'" :type="'header'" />
     </div>
     <div class="left-header col-xxl-5 col-xl-6 col-lg-5 col-md-4 col-sm-3 p-0">
-      <NoticeSlider />
     </div>
     <div class="nav-right col-xxl-7 col-xl-6 col-md-7 col-8 pull-right right-header p-0 ms-auto">
       <ul class="nav-menus">
@@ -25,7 +24,9 @@
         <li>
           <ModeLayout />
         </li>
-
+        <li class="cart-nav onhover-dropdown">
+          <Cart />
+        </li>
         <li class="onhover-dropdown">
           <Notification />
         </li>
@@ -46,13 +47,12 @@ import { useLayout } from '@/stores/layout';
 
 const SearchBar = defineAsyncComponent(() => import('@/components/layout/header/Search.vue'));
 const LogoWrapper = defineAsyncComponent(() => import('@/components/layout/header/Logo.vue'));
-const NoticeSlider = defineAsyncComponent(() => import('@/components/layout/header/Notice.vue'));
 const LanguageNav = defineAsyncComponent(() => import('@/components/layout/header/Language.vue'));
 const ToggleScreen = defineAsyncComponent(() => import('@/components/layout/header/ToggleScreen.vue'));
 const SvgIcon = defineAsyncComponent(() => import('@/components/shared/SvgIcon.vue'));
 const BookmarkView = defineAsyncComponent(() => import('@/components/layout/header/Bookmark.vue'));
 const ModeLayout = defineAsyncComponent(() => import('@/components/layout/header/Mode.vue'));
-
+const Cart = defineAsyncComponent(() => import('@/components/layout/header/Cart.vue'));
 const Notification = defineAsyncComponent(() => import('@/components/layout/header/Notification.vue'));
 const Profile = defineAsyncComponent(() => import('@/components/layout/header/Profile.vue'));
 const layoutStore = useLayout();

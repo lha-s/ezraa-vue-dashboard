@@ -9,7 +9,7 @@
     </Logo>
     <div class="logo-icon-wrapper">
       <router-link :to="'/'">
-        <img class="img-fluid" :src="`${getImage('logo/logo-icon.png')}`" alt="logo" />
+        <span class="logo-icon-text">L</span>
       </router-link>
     </div>
     <nav class="sidebar-main">
@@ -21,12 +21,19 @@
         <ul class="sidebar-links sidebar-scroll custom-scrollbar" id="simple-bar">
           <li class="back-btn">
             <router-link :to="'/'">
-              <img class="img-fluid" :src="`${getImage('logo/logo-icon.png')}`" alt="logo" />
+              <span class="logo-icon-text">L</span>
             </router-link>
             <div class="mobile-back text-end">
               <span>Back</span>
               <i class="fa-solid fa-angle-right ps-2"></i>
             </div>
+          </li>
+
+          <li v-if="showingCompanyView()" class="sidebar-list">
+            <router-link to="/dashboard" class="sidebar-link sidebar-title back-to-home-link">
+              <vue-feather type="arrow-left" class="back-to-home-icon" />
+              <span>{{ $t('back_to_home') }}</span>
+            </router-link>
           </li>
 
           <li class="pin-title sidebar-main-title" :class="{ show: state.pinedItem.length >= 1 }">
@@ -61,7 +68,6 @@ import { storeToRefs } from 'pinia';
 
 import { useLayout } from '@/stores/layout';
 import { useMenu } from '@/stores/menu';
-import { baseUtils } from '@/utils';
 
 const Logo = defineAsyncComponent(() => import('@/components/layout/header/Logo.vue'));
 const MenuItem = defineAsyncComponent(() => import('@/components/layout/sidebar/MenuItem.vue'));
@@ -71,7 +77,5 @@ const { layoutState } = storeToRefs(layoutStore);
 
 const menuStore = useMenu();
 const { state } = storeToRefs(menuStore);
-const { sidebarClose, scrollLeft, scrollRight } = menuStore;
-
-const { getImage } = baseUtils();
+const { sidebarClose, scrollLeft, scrollRight, showingCompanyView } = menuStore;
 </script>

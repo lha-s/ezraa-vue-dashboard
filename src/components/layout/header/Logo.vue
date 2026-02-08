@@ -1,8 +1,8 @@
 <template>
   <div class="logo-wrapper">
-    <a href="javascript:void(0)">
-      <img class="img-fluid for-light" :src="`${getImage('logo/logo.png')}`" alt="logo" />
-      <img class="img-fluid for-dark" :src="`${getImage('logo/logo_dark.png')}`" alt="logo" />
+    <a href="javascript:void(0)" class="logo-text">
+      <span class="for-light">LOGO</span>
+      <span class="for-dark">LOGO</span>
     </a>
 
     <template v-if="props.type == 'sidebar'">
@@ -23,14 +23,11 @@
 import { storeToRefs } from 'pinia';
 
 import { useLayout } from '@/stores/layout';
-import { baseUtils } from '@/utils';
 
 const props = defineProps<{
   icon: string;
   type: string;
 }>();
-
-const { getImage } = baseUtils();
 
 const layoutStore = useLayout();
 const { layoutState } = storeToRefs(layoutStore);
@@ -40,4 +37,20 @@ function toggleSidebar() {
 }
 </script>
 
-<style scoped></style>
+<style scoped>
+.logo-text {
+  text-decoration: none;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.logo-text .for-light {
+  color: #333;
+}
+
+.logo-text .for-dark {
+  color: #fff;
+}
+</style>
